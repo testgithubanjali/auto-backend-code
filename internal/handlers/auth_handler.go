@@ -12,21 +12,51 @@ type AuthHandler struct {
 	Service *services.AuthService
 }
 
-func (h *AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
-	var body struct {
-		Name     string
-		Email    string
-		Password string
-		Role     string
+func (ah *AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Name     string `json:"name"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+		Role     string `json:"role"`
 	}
 
-	json.NewDecoder(r.Body).Decode(&body)
+	json.NewDecoder(r.Body).Decode(&req)
 
-	err := h.Service.Signup(context.Background(), body.Name, body.Email, body.Password, body.Role)
+	err := ah.Service.Signup(
+		context.Background(),
+		req.Name,
+		req.Email,
+		req.Password,
+		req.Role,
+	)
+
 	if err != nil {
 		http.Error(w, "Signup failed", http.StatusBadRequest)
 		return
 	}
 
-	w.Write([]byte("Signup success"))
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("Signup successful"))
+}
+
+func (ah *AuthHandler) Signin(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	json.NewDecoder(r.Body).Decode(&req)
+
+	token, err := ah.Service.Signin(
+		context.Background(),
+		req.Email,
+		req.Password,
+	)
+
+	if err != nil {
+		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		return
+	}
+
+	w.Write([]byte(token))
 }

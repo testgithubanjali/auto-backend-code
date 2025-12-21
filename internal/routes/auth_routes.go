@@ -7,6 +7,7 @@ import (
 	"auto-booking-backend/internal/handlers"
 )
 
-func RegisterAuthRoutes(r *mux.Router, h *handlers.AuthHandler) {
-	r.HandleFunc("/signup", h.Signup).Methods(http.MethodPost)
+func AuthRoutes(r *mux.Router, h *handlers.AuthHandler) {
+	r.HandleFunc("/auth/signup", h.Signup).Methods(http.MethodPost)
+	r.HandleFunc("/auth/signin", h.Signin).Methods(http.MethodPost)
 }
