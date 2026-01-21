@@ -11,7 +11,7 @@ type Config struct {
 func LoadConfig() *Config {
 	return &Config{
 		MongoURI:  getEnv("MONGO_URI", "mongodb://localhost:27017"),
-		DBName:    getEnv("DB_NAME", "auto_booking"),
+		DBName:    getEnv("DB_NAME", "autoConnect"),
 		JWTSecret: getEnv("JWT_SECRET", "mysecretkey"),
 	}
 }

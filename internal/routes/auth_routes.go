@@ -1,13 +1,21 @@
 package routes
 
 import (
-	"net/http"
-
-	"github.com/gorilla/mux"
-	"auto-booking-backend/internal/handlers"
+    "github.com/gofiber/fiber/v2"
+    "auto-booking-backend/internal/handlers"
+    "auto-booking-backend/internal/repository"
+    "auto-booking-backend/internal/services"
 )
 
-func AuthRoutes(r *mux.Router, h *handlers.AuthHandler) {
-	r.HandleFunc("/auth/signup", h.Signup).Methods(http.MethodPost)
-	r.HandleFunc("/auth/signin", h.Signin).Methods(http.MethodPost)
+func RegisterAuthRoutes(app *fiber.App, userRepo *repository.UserRepo, jwtSecret string) {
+    // Initialize service
+    authService := services.NewAuthService(userRepo, jwtSecret)
+    
+    // Initialize handler
+    authHandler := handlers.NewAuthHandler(authService)
+    
+    // Auth routes
+    auth := app.Group("/auth")
+    auth.Post("/signup", authHandler.Signup)
+    auth.Post("/signin", authHandler.Signin)
 }
