@@ -64,6 +64,10 @@ func main() {
 
 	// 8️⃣ Register routes
 	routes.RegisterAuthRoutes(app, userRepo, cfg.JWTSecret)
+	driversCollection := client.Database(cfg.DBName).Collection("drivers")
+	driverRepo := repository.NewDriverRepo(driversCollection)
+
+	routes.RegisterDriverRoutes(app, driverRepo, cfg.JWTSecret)
 
 	// 9️⃣ Start server (PORT support for Docker/Cloud)
 	port := os.Getenv("PORT")
